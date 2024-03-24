@@ -773,7 +773,7 @@ piece_value(bq, -5).
 
 
 alphabeta(Player, Alpha, Beta, Board, NextMove, Eval, Depth) :-
-	Depth < 30,
+	Depth < 5,
 	NewDepth is Depth + 1,
 	list_available_moves(Board, Player, Moves),
 	bounded_best(Player, Alpha, Beta, Moves, NextMove, Eval, NewDepth), !.
