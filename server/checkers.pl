@@ -520,7 +520,11 @@ next_move(Board,Piece,X,Y,m(X,Y,X1,Y1,New_Board)):-
 	member(N,List),
 	X>N,Y>N,
 	X1 is X - N, Y1 is Y - N,
-	\+is_occupied(Board,X1,Y1),
+	generate_list(1,N,ListOc),
+	forall(member(M, ListOc), (
+	X2 is X - M, Y2 is Y - M,
+	\+ is_occupied(Board, X2, Y2)
+	)),
 	move(Board,X,Y,X1,Y1,New_Board).
 
 
@@ -532,8 +536,11 @@ next_move(Board,Piece,X,Y,m(X,Y,X1,Y1,New_Board)):-
 	member(N,List),
 	(X + N =<8), Y > N, % Ensure X > N and Y < N
 	X1 is X + N, Y1 is Y - N,
-	\+is_occupied(Board,X1,Y1),
-	move(Board,X,Y,X1,Y1,New_Board).
+	generate_list(1,N,ListOc),
+    forall(member(M, ListOc), (
+	X2 is X + M, Y2 is Y - M,
+	\+ is_occupied(Board, X2, Y2)
+	)),	move(Board,X,Y,X1,Y1,New_Board).
 
 % move down left
 next_move(Board,Piece,X,Y,m(X,Y,X1,Y1,New_Board)):-
@@ -543,8 +550,11 @@ next_move(Board,Piece,X,Y,m(X,Y,X1,Y1,New_Board)):-
 	member(N,List),
 	X > N, (Y + N =<8),
 	X1 is X - N, Y1 is Y + N,
-	\+is_occupied(Board,X1,Y1),
-	move(Board,X,Y,X1,Y1,New_Board).
+	generate_list(1,N,ListOc),
+    forall(member(M, ListOc), (
+	X2 is X - M, Y2 is Y + M,
+	\+ is_occupied(Board, X2, Y2)
+	)),	move(Board,X,Y,X1,Y1,New_Board).
 
 % move down right
 next_move(Board,Piece,X,Y,m(X,Y,X1,Y1,New_Board)):-
@@ -552,10 +562,16 @@ next_move(Board,Piece,X,Y,m(X,Y,X1,Y1,New_Board)):-
 	X < 8, Y < 8,
 	generate_list(1,7,List),
 	member(N,List),
-	(   X+N)=<8,(Y+N)=<8,
+	(X+N)=<8,(Y+N)=<8,
 	X1 is X + N, Y1 is Y + N,
-	\+is_occupied(Board,X1,Y1),
+	generate_list(1,N,ListOc),
+    forall(member(M, ListOc), (
+	X2 is X + M, Y2 is Y + M,
+	\+ is_occupied(Board, X2, Y2)
+	)),
 	move(Board,X,Y,X1,Y1,New_Board).
+
+
 
 
 queen(wq).
@@ -564,7 +580,7 @@ queen(bq).
 
 % list_available_moves(+Board,+Player,-Moves).
 % Returns a list with all the available plays to Player.
-% It returns either the available eats or if none exists, the posible moves.
+% It returns either the available eats or if none exists, the possible moves.
 list_available_moves(Board,Player,Moves):-
 	list_all_positions(Board,Player,Positions),
 	list_available_moves_aux(Board,Positions,Moves),
