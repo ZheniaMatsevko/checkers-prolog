@@ -1,10 +1,11 @@
-import React, {memo, useState} from "react";
+import React, {memo, useEffect, useState} from "react";
 import {BoardModel} from "../models/BoardModel";
 import {CellModel} from "../models/CellModel";
 import Cell from "./Cell";
 import {GameModesEnum} from "../enums/GameModesEnum";
 import {PlayerModel} from "../models/PlayerModel";
 import {ColorsEnum} from "../enums/ColorsEnum";
+import CheckersService from "../api/CheckersService";
 
 interface BoardProps {
     board: BoardModel;
@@ -17,6 +18,10 @@ const Board = memo(({ board, curPlayer, swapPlayer, gameMode }: BoardProps) => {
     const [selectedCell, setSelectedCell] = useState<CellModel | null>(null);
     const [isValidMove, setIsValidMove] = useState<boolean>(true);
 
+    useEffect(() => {
+            CheckersService.getInitialBoard()
+                .catch(error => console.error('Помилка при ініціалізації дошки', error));
+    }, []);
     /*
       Select Cell / Can select cell
     */

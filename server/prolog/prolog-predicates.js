@@ -39,6 +39,7 @@ function getResponseFromProlog(pQuery, callback) {
             },
             error: function (err) {
                 session.answers(() => {
+                    console.error("Error consulting Prolog:", err);
                     if (!responseSent) {
                         responseSent = true;
                         callback(err);

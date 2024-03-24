@@ -1,10 +1,10 @@
 import axios from 'axios';
 
-class CheckersService {
+export default class CheckersService {
     // Fetch the initial board state from the backend
-    async getInitialBoard(): Promise<any> {
+    static async getInitialBoard(): Promise<any> {
         try {
-            const response = await axios.get('/get-initial-board');
+            const response = await axios.get('http://localhost:3001/get-initial-board', );
             console.log("Board initialized successfully");
         } catch (error) {
             console.error('Error fetching initial board:', error);
@@ -13,9 +13,9 @@ class CheckersService {
     }
 
     // Send the user move to the backend for processing
-    async sendUserMove(moveData: { X1: number, Y1: number, X2: number, Y2: number }): Promise<any> {
+    static async sendUserMove(moveData: { X1: number, Y1: number, X2: number, Y2: number }): Promise<any> {
         try {
-            const response = await axios.put('/user-move', moveData);
+            const response = await axios.put('http://localhost:3001/user-move', moveData);
             console.log("User made a move successfully");
         } catch (error) {
             console.error('Error sending user move:', error);
@@ -24,9 +24,9 @@ class CheckersService {
     }
 
     // Request the backend to calculate the computer's move
-    async calculateComputerMove(color: string, boardState: string): Promise<any> {
+    static async calculateComputerMove(color: string): Promise<any> {
         try {
-            const response = await axios.put('/comp-move', { color, boardState });
+            const response = await axios.put('http://localhost:3001/comp-move', { color });
             return response.data;
         } catch (error) {
             console.error('Error calculating computer move:', error);
@@ -35,4 +35,3 @@ class CheckersService {
     }
 }
 
-export default new CheckersService();
