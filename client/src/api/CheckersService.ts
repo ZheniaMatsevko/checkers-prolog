@@ -1,26 +1,38 @@
-import axios from "axios";
-import {BoardModel} from "../models/BoardModel";
-import {ColorsEnum} from "../enums/ColorsEnum";
+import axios from 'axios';
 
-export default class CheckersService {
-    static async get_next_move(board: BoardModel, color: ColorsEnum): Promise<{ x: number, y: number }> {
+class CheckersService {
+    // Fetch the initial board state from the backend
+    async getInitialBoard(): Promise<any> {
         try {
-            // Create Prolog query based on the current state of the game board and player's color
-            const prologQuery = `get_next_move(${JSON.stringify(board)}, ${color}).`;
-
-            // Send the Prolog query to the server
-            const response = await axios.post("http://localhost:3000/prolog_query", { query: prologQuery });
-
-            // Parse the response to extract the next move coordinates (x, y)
-            const { x, y } = response.data;
-
-            console.log("Coordinates:" + x + " " + y);
-            // Return the next move coordinates
-            return { x, y };
+            const response = await axios.get('/get-initial-board');
+            console.log("Board initialized successfully");
         } catch (error) {
-            console.error("Error getting next move:", error);
-            throw error;
+            console.error('Error fetching initial board:', error);
+            throw new Error('Failed to fetch initial board');
         }
     }
 
+    // Send the user move to the backend for processing
+    async sendUserMove(moveData: { X1: number, Y1: number, X2: number, Y2: number }): Promise<any> {
+        try {
+            const response = await axios.put('/user-move', moveData);
+            console.log("User made a move successfully");
+        } catch (error) {
+            console.error('Error sending user move:', error);
+            throw new Error('Failed to send user move');
+        }
+    }
+
+    // Request the backend to calculate the computer's move
+    async calculateComputerMove(color: string, boardState: string): Promise<any> {
+        try {
+            const response = await axios.put('/comp-move', { color, boardState });
+            return response.data;
+        } catch (error) {
+            console.error('Error calculating computer move:', error);
+            throw new Error('Failed to calculate computer move');
+        }
+    }
 }
+
+export default new CheckersService();

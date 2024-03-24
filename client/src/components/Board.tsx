@@ -39,6 +39,8 @@ const Board = memo(({ board, curPlayer, swapPlayer, gameMode }: BoardProps) => {
         if (!cell.checker) {
             return false;
         }
+        console.log(cell.checker.player.playerColor);
+        console.log(curPlayer);
 
         return cell.checker.player.playerColor === curPlayer;
     }

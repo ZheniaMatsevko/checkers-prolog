@@ -101,7 +101,10 @@ function App() {
         setShowColorSelectionModal(false);
         const player1 = new PlayerModel(PlayerTypesEnum.HUMAN, color);
         const player2 = new PlayerModel(PlayerTypesEnum.COMPUTER, color===ColorsEnum.WHITE?ColorsEnum.BLACK:ColorsEnum.WHITE);
-        const newBoard = new BoardModel(player1, player2);
+        let newBoard = new BoardModel(player1, player2);
+        if(color===ColorsEnum.BLACK){
+            newBoard = new BoardModel(player2, player1);
+        }
         newBoard.initBoard();
         newBoard.initCheckers();
         setBoard(newBoard);
