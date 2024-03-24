@@ -194,22 +194,22 @@ board_print_line_element(Line,Index):-
 board_print_line_element(Line,Index):-
 	arg(Index,Line,E),
 	E == w, !,
-	format('~c',[9920]),	% unicode white checkers piece
+	format('~c',[43]),	% unicode white checkers piece
 	tab(2).
 board_print_line_element(Line,Index):-
 	arg(Index,Line,E),
 	E == b, !,
-	format('~c',[9922]),	% unicode black checkers piece
+	format('~c',[60]),	% unicode black checkers piece
 	tab(2).
 board_print_line_element(Line,Index):-
 	arg(Index,Line,E),
 	E == wq, !,
-	format('~c',[9921]),	% unicode white king checkers piece
+	format('~c',[35]),	% unicode white king checkers piece
 	tab(2).
 board_print_line_element(Line,Index):-
 	arg(Index,Line,E),
 	E == bq, !,
-	format('~c',[9923]),	% unicode black king checkers piece
+	format('~c',[38]),	% unicode black king checkers piece
 	tab(2).
 
 board_print_line_element(Line,Index):-
