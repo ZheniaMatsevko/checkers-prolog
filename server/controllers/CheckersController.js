@@ -50,10 +50,14 @@ class CheckersController {
                     return res.status(500).json({ error: 'Failed to calculate next move' });
                 }
 
-               console.log(coordinates);
-
+               let term = coordinates.links.Coordinates;
+                const [X1, Y1, X2, Y2] = term.args.map(arg => arg.value);
                 // Send response with updated board state
-                res.status(200).json({ message: 'Computer move calculated and board updated', boardState: boardPlInstance.getBoardState() });
+                res.status(200).json({
+                    message: 'Computer move calculated and board updated',
+                    boardState: boardPlInstance.getBoardState(),
+                    moveCoordinates: { X1, Y1, X2, Y2 } // Include the move coordinates in the response
+                });
             });
         } catch (error) {
             // Handle any errors that occur during the move calculation

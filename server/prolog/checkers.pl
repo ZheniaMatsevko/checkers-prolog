@@ -695,7 +695,7 @@ piece_value(bq, -5).
 
 
 alphabeta(Player, Alpha, Beta, Board, NextMove, Eval, Depth) :-
-	Depth < 30,
+	Depth < 1,
 	NewDepth is Depth + 1,
 	list_available_moves(Board, Player, Moves),
 	bounded_best(Player, Alpha, Beta, Moves, NextMove, Eval, NewDepth), !.
@@ -816,9 +816,10 @@ make_play(black,_):-
     write('Draw.'), nl.
 
 
-getNextMoveFor(Colour, Board, NextMove) :-
+getNextMoveFor(Colour, Board, Coordinates) :-
     alphabeta(Colour, -1000, 1000, Board, NextMove, _, 0),    % Run alpha beta for current board
-    nonvar(NextMove), !.
+    nonvar(NextMove), !,
+    getCoordinatesFromMove(NextMove, Coordinates).
 
 % Define the getCoordinatesFromMove predicate
 getCoordinatesFromMove(m(X1, Y1, X2, Y2, _), c(X1, Y1, X2, Y2)).
