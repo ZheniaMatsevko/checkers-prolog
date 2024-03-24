@@ -8,6 +8,12 @@ const {query} = require("express");
 
 const ret = (x,res) => {if (!res.headersSent) res.send(pl.format_answer(x))}
 
+exports.getBoard = (req,res) => {
+    const pQuery = 'board_initialize_game(Board).';
+
+    getResponseFromProlog(pQuery,res);
+}
+
 const getResponseFromProlog = (pQuery, res) => {
     const session = pl.create();
     let responseSent = false;
