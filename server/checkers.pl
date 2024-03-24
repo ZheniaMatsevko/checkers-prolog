@@ -878,6 +878,17 @@ make_play(black,_):-
     write('Draw.'), nl.
 
 
+% a predicate to generate a list of integers from Start to End
+generate_list(Start, End, List) :-
+    generate_list_helper(Start, End, [], List).
+
+generate_list_helper(End, End, Acc, [End|Acc]).
+generate_list_helper(Start, End, Acc, List) :-
+    Start < End,
+    Next is Start + 1,
+    generate_list_helper(Next, End, [Start|Acc], List).
+
+
 getNextMoveFor(Colour, Board, NextMove) :-
     alphabeta(Colour, -1000, 1000, Board, NextMove, _, 0),    % Run alpha beta for current board
     nonvar(NextMove), !.
