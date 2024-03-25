@@ -64,11 +64,12 @@ class CheckersController {
         }
     }
    async updateUserMove(req, res, next) {
-       const { X1, Y1, X2, Y2, eatenCheckers } = req.body;
+       const { X1, Y1, X2, Y2, eatenCheckers, isKing } = req.body;
 
        try {
-            boardPlInstance.updateBoardWithCoords(Y1, X1, Y2, X2);
+            boardPlInstance.updateBoardWithCoords(Y1, X1, Y2, X2, isKing);
             boardPlInstance.eatCheckers(eatenCheckers);
+
            for (let i = 0; i < eatenCheckers.length; i++) {
                const { x, y } = eatenCheckers[i];
                console.log(`Eaten checker ${i + 1}: x = ${x}, y = ${y}`);
