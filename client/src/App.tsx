@@ -20,7 +20,9 @@ function App() {
     const [selectedMode, setSelectedMode] = useState<GameModesEnum | null>(null);
     const [showColorSelectionModal, setShowColorSelectionModal] = useState<boolean>(false);
     const [selectedColor, setSelectedColor] = useState<ColorsEnum | null>(null); // State to store selected color
-
+    const updateIsGameOver = (value: boolean) => {
+        setIsGameOver(value);
+    };
     /*
       Game presets
     */
@@ -148,6 +150,7 @@ function App() {
                         curPlayer={curPlayer}
                         swapPlayer={swapPlayer}
                         gameMode={selectedMode}
+                        updateIsGameOver={updateIsGameOver}
                     />
                 </>
             )}

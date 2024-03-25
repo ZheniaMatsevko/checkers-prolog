@@ -11,9 +11,10 @@ interface BoardProps {
     curPlayer: ColorsEnum,
     swapPlayer: () => Promise<void>;
     gameMode: GameModesEnum;
+    updateIsGameOver: (value: boolean) => void;
 }
 
-const Board = memo(({ board, curPlayer, swapPlayer, gameMode }: BoardProps) => {
+const Board = memo(({ board, curPlayer, swapPlayer, gameMode, updateIsGameOver }: BoardProps) => {
     const [selectedCell, setSelectedCell] = useState<CellModel | null>(null);
     const [isValidMove, setIsValidMove] = useState<boolean>(true);
 
@@ -24,7 +25,7 @@ const Board = memo(({ board, curPlayer, swapPlayer, gameMode }: BoardProps) => {
                 await CheckersService.getInitialBoard();
 
                 // After the first query finishes successfully, execute the second query
-                if ((gameMode === GameModesEnum.COMP_COMP || gameMode === GameModesEnum.COMP_PL) && curPlayer !== board.getHumanColour()) {
+                if (gameMode === GameModesEnum.COMP_PL && curPlayer !== board.getHumanColour()) {
                     const computerMoveData = await CheckersService.calculateComputerMove(curPlayer);
                     const newBoardState = computerMoveData.boardState;
                     board.updateBoard(newBoardState);
@@ -40,6 +41,20 @@ const Board = memo(({ board, curPlayer, swapPlayer, gameMode }: BoardProps) => {
                     setSelectedCell(cell1);
                     console.log(selectedCell);
                     handleMove2(cell1, cell2);*/
+                }
+                if(gameMode === GameModesEnum.COMP_COMP){
+                    while (board.hasMoves(curPlayer)) {
+                        console.log("Next move by " + curPlayer);
+                        const computerMoveData = await CheckersService.calculateComputerMove(curPlayer);
+                        const newBoardState = computerMoveData.boardState;
+                        board.updateBoard(newBoardState);
+                        board.resetHighlights();
+                        setSelectedCell(null);
+                        swapPlayer();
+                        const newPlayer = curPlayer === ColorsEnum.WHITE ? ColorsEnum.BLACK : ColorsEnum.WHITE;
+                        curPlayer=newPlayer;
+                    }
+                    updateIsGameOver(true);
                 }
             } catch (error) {
                 console.error('Error:', error);
