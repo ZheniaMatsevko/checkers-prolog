@@ -31,10 +31,18 @@ class BoardPl {
         this.boardState = newState;
     }
 
-    updateBoardWithCoords(X1,Y1,X2,Y2) {
-        const temp = this.boardState[X1][Y1];
-        this.boardState[X1][Y1] = this.boardState[X2][Y2];
-        this.boardState[X2][Y2] = temp;
+    updateBoardWithCoords(X1, Y1, X2, Y2, isKing) {
+        let temp = this.boardState[X1][Y1]; // Initialize temp with the piece at position X1, Y1
+        this.boardState[X1][Y1] = this.boardState[X2][Y2]; // Move the piece from X2, Y2 to X1, Y1
+        if (isKing) {
+            // Check if the piece should be promoted to a king
+            if (temp === "b") {
+                temp = "bq"; // Promote black piece to king
+            } else if (temp === "w") {
+                temp = "wq"; // Promote white piece to king
+            }
+        }
+        this.boardState[X2][Y2] = temp; // Update the piece at X2, Y2 with temp
     }
 
     eatCheckers(eatenCheckers){

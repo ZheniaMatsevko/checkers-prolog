@@ -148,6 +148,16 @@ const Board = memo(({ board, curPlayer, swapPlayer, gameMode, difficulty, update
                 board.moveChecker(selectedCell, cell.y, cell.x);
                 console.log(("move checker"));
             }
+
+
+            const isPlayerOneCheckerOnTheEdge = (cell.checker?.player.playerColor === ColorsEnum.WHITE && cell.y === 0);
+            const isPlayerTwoCheckerOnTheEdge = (cell.checker?.player.playerColor === ColorsEnum.BLACK && cell.y === 7)
+
+            if (!board.isKing(cell) && (isPlayerOneCheckerOnTheEdge || isPlayerTwoCheckerOnTheEdge)) {
+                console.log("making King....");
+                board.makeKing(cell);
+            }
+
             if(!isJump){
                 console.log("sending data to backend");
 
@@ -156,7 +166,8 @@ const Board = memo(({ board, curPlayer, swapPlayer, gameMode, difficulty, update
                     Y1: selectedCell.y,
                     X2: cell.x,
                     Y2: cell.y,
-                    eatenCheckers: [] // Assuming eatenCheckers is empty in this case
+                    eatenCheckers: [],
+                    isKing: board.isKing(cell)// Assuming eatenCheckers is empty in this case
                 };
 
                 await CheckersService.sendUserMove(moveData);
@@ -170,18 +181,11 @@ const Board = memo(({ board, curPlayer, swapPlayer, gameMode, difficulty, update
                     Y1: selectedCell.y,
                     X2: cell.x,
                     Y2: cell.y,
-                    eatenCheckers: [{ x: midY, y: midX }]
+                    eatenCheckers: [{ x: midY, y: midX }],
+                    isKing: board.isKing(cell)
                 };
 
                 await CheckersService.sendUserMove(moveData2);
-            }
-
-            const isPlayerOneCheckerOnTheEdge = (cell.checker?.player.playerColor === ColorsEnum.WHITE && cell.y === 0);
-            const isPlayerTwoCheckerOnTheEdge = (cell.checker?.player.playerColor === ColorsEnum.BLACK && cell.y === 7)
-
-            if (!board.isKing(cell) && (isPlayerOneCheckerOnTheEdge || isPlayerTwoCheckerOnTheEdge)) {
-                console.log("making King....");
-                board.makeKing(cell);
             }
 
             if (isJump && board.canKeepJumping(cell)) {
