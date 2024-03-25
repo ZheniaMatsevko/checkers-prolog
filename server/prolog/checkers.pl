@@ -694,33 +694,33 @@ piece_value(bq, -5).
 
 
 
-alphabeta(Player, Alpha, Beta, Board, NextMove, Eval, Depth) :-
-	Depth < 1,
+alphabeta(Player, Alpha, Beta, Board, NextMove, Eval, Depth, MaxDepth) :-
+	Depth < MaxDepth,
 	NewDepth is Depth + 1,
 	list_available_moves(Board, Player, Moves),
-	bounded_best(Player, Alpha, Beta, Moves, NextMove, Eval, NewDepth), !.
+	bounded_best(Player, Alpha, Beta, Moves, NextMove, Eval, NewDepth, MaxDepth), !.
 
-alphabeta(Player, Alpha, Beta, Board, NextMove, Eval, Depth) :-
+alphabeta(Player, Alpha, Beta, Board, NextMove, Eval, Depth, _) :-
 	evaluate_board(Board, Eval, 1), !.
 
-bounded_best(Player, Alpha, Beta, [Move|Moves], BestMove, BestEval, Depth) :-
+bounded_best(Player, Alpha, Beta, [Move|Moves], BestMove, BestEval, Depth, MaxDepth) :-
 	dechain(Move, Move1),
 	move_board(Move1, Board),
 	next_player(Player, NextPlayer),
-	alphabeta(NextPlayer, Alpha, Beta, Board, _, Eval, Depth),
-	good_enough(Player, Moves, Alpha, Beta, Move1, Eval, BestMove, BestEval, Depth).
+	alphabeta(NextPlayer, Alpha, Beta, Board, _, Eval, Depth, MaxDepth),
+	good_enough(Player, Moves, Alpha, Beta, Move1, Eval, BestMove, BestEval, Depth, MaxDepth).
 
-good_enough(Player, [], _, _, Move, Eval, Move, Eval, Depth) :- !.
+good_enough(Player, [], _, _, Move, Eval, Move, Eval, Depth, _) :- !.
 
-good_enough(Player, _, Alpha, Beta, Move, Eval, Move, Eval, Depth) :-
+good_enough(Player, _, Alpha, Beta, Move, Eval, Move, Eval, Depth, _) :-
 	minimizing(Player), Eval > Alpha, !.
 
-good_enough(Player, _, Alpha, Beta, Move, Eval, Move, Eval, Depth) :-
+good_enough(Player, _, Alpha, Beta, Move, Eval, Move, Eval, Depth, _) :-
 	maximizing(Player), Eval < Beta, !.
 
-good_enough(Player, Moves, Alpha, Beta, Move, Eval, BestMove, BestEval, Depth) :-
+good_enough(Player, Moves, Alpha, Beta, Move, Eval, BestMove, BestEval, Depth, MaxDepth) :-
 	new_bounds(Player, Alpha, Beta, Eval, NewAlpha, NewBeta),
-	bounded_best(Player, NewAlpha, NewBeta, Moves, Move1, Eval1, Depth),
+	bounded_best(Player, NewAlpha, NewBeta, Moves, Move1, Eval1, Depth, MaxDepth),
 	better_of(Player, Move, Eval, Move1, Eval1, BestMove, BestEval).
 
 new_bounds(Player, Alpha, Beta, Eval, Eval, Beta) :-
@@ -782,7 +782,7 @@ play:-
 
 
 make_play(white, Board) :-
-    alphabeta(white, -1000, 1000, Board, NextMove, Eval, 0),    % Run alpha beta for current board
+    alphabeta(white, -1000, 1000, Board, NextMove, Eval, 0, 3),    % Run alpha beta for current board
     nonvar(NextMove), !,
     write('White (computer) turn to play.'), nl,
     write('Move evaluation: '), write(Eval), nl,
@@ -816,8 +816,8 @@ make_play(black,_):-
     write('Draw.'), nl.
 
 
-getNextMoveFor(Colour, Board, NextMove) :-
-    alphabeta(Colour, -1000, 1000, Board, NextMove, _, 0),    % Run alpha beta for current board
+getNextMoveFor(Colour, Board, MaxDepth, NextMove) :-
+    alphabeta(Colour, -1000, 1000, Board, NextMove, _, 0, MaxDepth),    % Run alpha beta for current board
     nonvar(NextMove), !.
 
 % Define the getCoordinatesFromMove predicate

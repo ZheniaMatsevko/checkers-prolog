@@ -32,6 +32,20 @@ export default class CheckersService {
         }
     }
 
+    static async setDifficulty(difficulty: string): Promise<void> {
+        try {
+            console.log(difficulty); // Check if difficulty is received correctly here
+            const response = await axios.post('http://localhost:3001/set-difficulty', null, {
+                params: { difficulty: difficulty }
+            });
+            console.log("Difficulty set successfully");
+        } catch (error) {
+            console.error('Error setting difficulty:', error);
+            throw new Error('Failed to set difficulty');
+        }
+    }
+
+
     // Request the backend to calculate the computer's move
     static async calculateComputerMove(color: string): Promise<any> {
         try {

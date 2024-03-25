@@ -13,4 +13,6 @@ router.put('/user-move', checkersController.updateUserMove);
 
 router.put('/comp-move', checkersController.updateCompMove);
 
+router.post('/set-difficulty', checkersController.setDifficulty)
+
 module.exports = router;

@@ -1,8 +1,19 @@
 const BoardPl = require("../model/BoardPl");
 const { getBoard, getNextMoveFor, getAvailableUserMoves} = require("../prolog/prolog-predicates");
 const boardPlInstance = new BoardPl();
-
+let maxDepth = 1;
 class CheckersController {
+    async setDifficulty(req, res, next) {
+        try {
+            const difficulty  = req.query.difficulty; // Check if difficulty is correctly received from the request body
+            maxDepth = difficulty;
+            res.status(200).json({ message: 'Difficulty set successfully', boardState: boardPlInstance.getBoardState() });
+        } catch (error) {
+            console.error(error);
+            res.status(500).json({ error: "Failed to set difficulty" });
+        }
+    }
+
     async getInitialBoard(req, res, next) {
         try {
             getBoard((error, boardString) => {
@@ -79,7 +90,7 @@ class CheckersController {
             const { color } = req.body;
 
             // Calculate the next move for the computer player
-            getNextMoveFor(color, boardState, (error, coordinates) => {
+            getNextMoveFor(color, boardState, maxDepth, (error, coordinates) => {
                 if (error) {
                     console.error('Error calculating next move:', error);
                     return res.status(500).json({ error: 'Failed to calculate next move' });

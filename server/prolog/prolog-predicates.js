@@ -10,8 +10,8 @@ exports.getBoard = (callback) => {
     getResponseFromProlog(pQuery, callback);
 };
 
-exports.getNextMoveFor = (playerColor, boardState, callback) => {
-    const pQuery = `getNextMoveFor(${playerColor}, ${boardState}, NextMove).`;
+exports.getNextMoveFor = (playerColor, boardState, depth, callback) => {
+    const pQuery = `getNextMoveFor(${playerColor}, ${boardState}, ${depth}, NextMove).`;
     getResponseFromProlog(pQuery, callback);
 };
 

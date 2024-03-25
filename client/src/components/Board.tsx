@@ -26,9 +26,12 @@ const Board = memo(({ board, curPlayer, swapPlayer, gameMode, difficulty, update
                 // Execute the first query and wait for it to finish
                 await CheckersService.getInitialBoard();
 
+                console.log(difficulty);
+                if (gameMode === GameModesEnum.COMP_PL )
+                    await CheckersService.setDifficulty(difficulty);
+
                 // After the first query finishes successfully, execute the second query
                 if (gameMode === GameModesEnum.COMP_PL && curPlayer !== board.getHumanColour()) {
-                    console.log(difficulty);
                     const computerMoveData = await CheckersService.calculateComputerMove(curPlayer);
                     const newBoardState = computerMoveData.boardState;
                     board.updateBoard(newBoardState);
