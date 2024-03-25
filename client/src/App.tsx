@@ -10,6 +10,7 @@ import {ColorsEnum} from "./enums/ColorsEnum";
 import {PlayerTypesEnum} from "./enums/PlayerTypesEnum";
 import {PlayerModel} from "./models/PlayerModel";
 import ColorSelectionModal from "./components/ColorSelectionModal";
+import {DifficultyEnum} from "./enums/DifficultyEnum";
 
 
 function App() {
@@ -18,6 +19,8 @@ function App() {
     const [isGameOver, setIsGameOver] = useState<boolean>(false);
     const [time, setTime] = useState<number>(0);
     const [selectedMode, setSelectedMode] = useState<GameModesEnum | null>(null);
+    const [selectedDifficulty, setSelectedDifficulty] = useState<DifficultyEnum>(DifficultyEnum.NONE);
+
     const [showColorSelectionModal, setShowColorSelectionModal] = useState<boolean>(false);
     const [selectedColor, setSelectedColor] = useState<ColorsEnum | null>(null); // State to store selected color
     const updateIsGameOver = (value: boolean) => {
@@ -106,6 +109,9 @@ function App() {
             setShowColorSelectionModal(true); // Set showColorSelectionModal to true for Computer vs Player mode
         }
     };
+    const handleDifficultySelect = (mode: DifficultyEnum) => {
+        setSelectedDifficulty(mode);
+    };
     const handleColorSelect = (color: ColorsEnum) => {
         setSelectedColor(color);
         setShowColorSelectionModal(false);
@@ -128,7 +134,7 @@ function App() {
             {!selectedMode && <GameModeModal onSelect={handleModeSelect} />}
 
             {showColorSelectionModal && ( // Render ColorSelectionModal if showColorSelectionModal is true
-                <ColorSelectionModal onSelectColor={handleColorSelect} />
+                <ColorSelectionModal onSelectColor={handleColorSelect} onSelect={handleDifficultySelect} />
             )}
 
             {selectedMode && board && !showColorSelectionModal && (
@@ -151,6 +157,7 @@ function App() {
                         swapPlayer={swapPlayer}
                         gameMode={selectedMode}
                         updateIsGameOver={updateIsGameOver}
+                        difficulty={selectedDifficulty}
                     />
                 </>
             )}

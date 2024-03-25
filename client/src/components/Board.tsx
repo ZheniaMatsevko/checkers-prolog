@@ -5,16 +5,18 @@ import Cell from "./Cell";
 import {GameModesEnum} from "../enums/GameModesEnum";
 import {ColorsEnum} from "../enums/ColorsEnum";
 import CheckersService from "../api/CheckersService";
+import {DifficultyEnum} from "../enums/DifficultyEnum";
 
 interface BoardProps {
     board: BoardModel;
     curPlayer: ColorsEnum,
     swapPlayer: () => Promise<void>;
     gameMode: GameModesEnum;
+    difficulty: DifficultyEnum;
     updateIsGameOver: (value: boolean) => void;
 }
 
-const Board = memo(({ board, curPlayer, swapPlayer, gameMode, updateIsGameOver }: BoardProps) => {
+const Board = memo(({ board, curPlayer, swapPlayer, gameMode, difficulty, updateIsGameOver }: BoardProps) => {
     const [selectedCell, setSelectedCell] = useState<CellModel | null>(null);
     const [isValidMove, setIsValidMove] = useState<boolean>(true);
 
@@ -26,6 +28,7 @@ const Board = memo(({ board, curPlayer, swapPlayer, gameMode, updateIsGameOver }
 
                 // After the first query finishes successfully, execute the second query
                 if (gameMode === GameModesEnum.COMP_PL && curPlayer !== board.getHumanColour()) {
+                    console.log(difficulty);
                     const computerMoveData = await CheckersService.calculateComputerMove(curPlayer);
                     const newBoardState = computerMoveData.boardState;
                     board.updateBoard(newBoardState);
