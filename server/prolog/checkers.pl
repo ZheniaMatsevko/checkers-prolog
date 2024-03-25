@@ -331,6 +331,31 @@ next_eat_move(Board,w,X,Y,e(X,Y,X2,Y2,New_Board)):-
 	move(Board,X,Y,X2,Y2,Temp_Board),
 	remove_from_board(Temp_Board,X1,Y1,New_Board).
 
+
+
+% try to eat backward left
+    next_eat_move(Board,w,X,Y,e(X,Y,X2,Y2,New_Board)):-
+    	X > 2, Y < 7,
+    	X1 is X - 1, Y1 is Y + 1,
+    	is_enemy(Board,X1,Y1,white),
+    	X2 is X - 2, Y2 is Y + 2,
+    	\+is_occupied(Board,X2,Y2),
+    	move(Board,X,Y,X2,Y2,Temp_Board),
+
+
+    	remove_from_board(Temp_Board,X1,Y1,New_Board).
+
+    %try to eat backward right
+    next_eat_move(Board,w,X,Y,e(X,Y,X2,Y2,New_Board)):-
+    	X < 7, Y < 7,
+    	X1 is X + 1, Y1 is Y + 1,
+    	is_enemy(Board,X1,Y1,white),
+    	X2 is X + 2, Y2 is Y + 2,
+    	\+is_occupied(Board,X2,Y2),
+    	move(Board,X,Y,X2,Y2,Temp_Board),
+    	remove_from_board(Temp_Board,X1,Y1,New_Board).
+
+
 % try to eat to the left
 next_eat_move(Board,b,X,Y,e(X,Y,X2,Y2,New_Board)):-
 	X > 2, Y < 7,
@@ -350,6 +375,28 @@ next_eat_move(Board,b,X,Y,e(X,Y,X2,Y2,New_Board)):-
 	\+is_occupied(Board,X2,Y2),
 	move(Board,X,Y,X2,Y2,Temp_Board),
 	remove_from_board(Temp_Board,X1,Y1,New_Board).
+
+
+% try to eat backward left
+next_eat_move(Board,b,X,Y,e(X,Y,X2,Y2,New_Board)):-
+	X > 2, Y > 2,
+	X1 is X - 1, Y1 is Y - 1,
+	is_enemy(Board,X1,Y1,black),
+	X2 is X - 2, Y2 is Y - 2,
+	\+is_occupied(Board,X2,Y2),
+	move(Board,X,Y,X2,Y2,Temp_Board),
+	remove_from_board(Temp_Board,X1,Y1,New_Board).
+
+% try to eat backward right
+next_eat_move(Board,b,X,Y,e(X,Y,X2,Y2,New_Board)):-
+	X < 7, Y > 2,
+	X1 is X + 1, Y1 is Y - 1,
+	is_enemy(Board,X1,Y1,black),
+	X2 is X + 2, Y2 is Y - 2,
+	\+is_occupied(Board,X2,Y2),
+	move(Board,X,Y,X2,Y2,Temp_Board),
+	remove_from_board(Temp_Board,X1,Y1,New_Board).
+
 
 % try to eat forward left
 next_eat_move(Board,wq,X,Y,e(X,Y,X2,Y2,New_Board)):-
@@ -468,33 +515,61 @@ next_move(Board,b,X,Y,m(X,Y,X1,Y1,New_Board)):-
 next_move(Board,Piece,X,Y,m(X,Y,X1,Y1,New_Board)):-
 	queen(Piece),
 	X > 1, Y > 1,
-	X1 is X - 1, Y1 is Y - 1,
-	\+is_occupied(Board,X1,Y1),
+	generate_list(1,7,List),
+	member(N,List),
+	X>N,Y>N,
+	X1 is X - N, Y1 is Y - N,
+	generate_list(1,N,ListOc),
+	forall(member(M, ListOc), (
+	X2 is X - M, Y2 is Y - M,
+	\+ is_occupied(Board, X2, Y2)
+	)),
 	move(Board,X,Y,X1,Y1,New_Board).
+
 
 % move up right
 next_move(Board,Piece,X,Y,m(X,Y,X1,Y1,New_Board)):-
 	queen(Piece),
 	X < 8, Y > 1,
-	X1 is X + 1, Y1 is Y - 1,
-	\+is_occupied(Board,X1,Y1),
-	move(Board,X,Y,X1,Y1,New_Board).
+	generate_list(1,7,List),
+	member(N,List),
+	(X + N =<8), Y > N, % Ensure X > N and Y < N
+	X1 is X + N, Y1 is Y - N,
+	generate_list(1,N,ListOc),
+    forall(member(M, ListOc), (
+	X2 is X + M, Y2 is Y - M,
+	\+ is_occupied(Board, X2, Y2)
+	)),	move(Board,X,Y,X1,Y1,New_Board).
 
 % move down left
 next_move(Board,Piece,X,Y,m(X,Y,X1,Y1,New_Board)):-
 	queen(Piece),
 	X > 1, Y < 8,
-	X1 is X - 1, Y1 is Y + 1,
-	\+is_occupied(Board,X1,Y1),
-	move(Board,X,Y,X1,Y1,New_Board).
+	generate_list(1,7,List),
+	member(N,List),
+	X > N, (Y + N =<8),
+	X1 is X - N, Y1 is Y + N,
+	generate_list(1,N,ListOc),
+    forall(member(M, ListOc), (
+	X2 is X - M, Y2 is Y + M,
+	\+ is_occupied(Board, X2, Y2)
+	)),	move(Board,X,Y,X1,Y1,New_Board).
 
 % move down right
 next_move(Board,Piece,X,Y,m(X,Y,X1,Y1,New_Board)):-
 	queen(Piece),
 	X < 8, Y < 8,
-	X1 is X + 1, Y1 is Y + 1,
-	\+is_occupied(Board,X1,Y1),
+	generate_list(1,7,List),
+	member(N,List),
+	(X+N)=<8,(Y+N)=<8,
+	X1 is X + N, Y1 is Y + N,
+	generate_list(1,N,ListOc),
+    forall(member(M, ListOc), (
+	X2 is X + M, Y2 is Y + M,
+	\+ is_occupied(Board, X2, Y2)
+	)),
 	move(Board,X,Y,X1,Y1,New_Board).
+
 
 queen(wq).
 queen(bq).
@@ -814,6 +889,18 @@ make_play(black,Board) :-
     write('White (computer) wins the game.'),nl.
 make_play(black,_):-
     write('Draw.'), nl.
+
+
+    % a predicate to generate a list of integers from Start to End
+    generate_list(Start, End, List) :-
+        generate_list_helper(Start, End, [], List).
+
+    generate_list_helper(End, End, Acc, [End|Acc]).
+    generate_list_helper(Start, End, Acc, List) :-
+        Start < End,
+        Next is Start + 1,
+        generate_list_helper(Next, End, [Start|Acc], List).
+
 
 
 getNextMoveFor(Colour, Board, MaxDepth, NextMove) :-
