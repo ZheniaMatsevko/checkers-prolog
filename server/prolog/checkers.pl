@@ -816,10 +816,9 @@ make_play(black,_):-
     write('Draw.'), nl.
 
 
-getNextMoveFor(Colour, Board, Coordinates) :-
+getNextMoveFor(Colour, Board, NextMove) :-
     alphabeta(Colour, -1000, 1000, Board, NextMove, _, 0),    % Run alpha beta for current board
-    nonvar(NextMove), !,
-    getCoordinatesFromMove(NextMove, Coordinates).
+    nonvar(NextMove), !.
 
 % Define the getCoordinatesFromMove predicate
 getCoordinatesFromMove(m(X1, Y1, X2, Y2, _), c(X1, Y1, X2, Y2)).

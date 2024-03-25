@@ -1,20 +1,35 @@
-import { ColorsEnum } from "../enums/ColorsEnum";
-import { TCellCoords } from "../types/TCellCoords";
-import { TMoves } from "../types/TMoves";
-import { CellModel } from "./CellModel";
-import { CheckerModel } from "./CheckerModel";
-import { getKingMoves } from "./BoardLogicSlices/getKingMoves";
-import { checkAdjacent, checkJumps } from "./BoardLogicSlices/getCheckerMoves";
+import {ColorsEnum} from "../enums/ColorsEnum";
+import {TCellCoords} from "../types/TCellCoords";
+import {TMoves} from "../types/TMoves";
+import {CellModel} from "./CellModel";
+import {CheckerModel} from "./CheckerModel";
+import {getKingMoves} from "./BoardLogicSlices/getKingMoves";
+import {checkAdjacent, checkJumps} from "./BoardLogicSlices/getCheckerMoves";
 import {PlayerModel} from "./PlayerModel";
+import {PossibleMove} from "../types/PossibleMove";
+import {PlayerTypesEnum} from "../enums/PlayerTypesEnum";
 
 export class BoardModel {
     cells: CellModel[][] = [];
     player1: PlayerModel;
     player2: PlayerModel;
+    possibleMoves: PossibleMove[]
 
     constructor(player1: PlayerModel, player2: PlayerModel) {
         this.player1 = player1;
         this.player2 = player2;
+        this.possibleMoves=[];
+    }
+
+    public setPossibleMoves(data: any){
+        console.log(data);
+    }
+
+    public getHumanColour(){
+        if(this.player1.playerType===PlayerTypesEnum.HUMAN)
+            return this.player1.playerColor;
+        if(this.player2.playerType===PlayerTypesEnum.HUMAN)
+            return this.player2.playerColor;
     }
     /*
       Initialize Board and Checkers
@@ -230,10 +245,13 @@ export class BoardModel {
             let midY = (cY + cellY) / 2;
             let midX = (cX + cellX) / 2;
             this.cells[midY][midX].checker = null;
+            console.log("isJumpMove(selectedCell, cellY)");
         }
 
         this.cells[cellY][cellX].checker = selectedCell.checker;
+        console.log("put "+selectedCell.checker+"on "+cellY+", " + cellX);
         this.cells[cY][cX].checker = null;
+        console.log("moved Checker");
     }
 
     public moveKingChecker(selectedCell: CellModel, cellY: number, cellX: number) {
@@ -255,4 +273,64 @@ export class BoardModel {
         this.cells[cellY][cellX].checker = selectedCell.checker;
         this.cells[selectedCell.y][selectedCell.x].checker = null;
     }
+    updateBoard(data: any){
+        console.log(data);
+        for (let i = 0; i < data.length; i++) {
+            const row = data[i];
+            for (let j = 0; j < row.length; j++) {
+                const element = row[j];
+                console.log(this.cells[i][j]);
+                switch (element) {
+                    case 0:
+                        this.cells[i][j].checker = null;
+                        console.log("Empty cell");
+                        break;
+                    case 1:
+                        this.cells[i][j].checker = null;
+                        console.log("Value is 1");
+                        break;
+                    case "b":
+                        this.cells[i][j].checker = new CheckerModel(ColorsEnum.BLACK, this.player2);
+                        console.log("Black checker");
+                        break;
+                    case "w":
+                        this.cells[i][j].checker = new CheckerModel(ColorsEnum.WHITE, this.player1);
+                        console.log("White checker");
+                        break;
+                    case "bq":
+                        this.cells[i][j].checker = new CheckerModel(ColorsEnum.BLACK, this.player2);
+                        this.makeKing(this.cells[i][j]);
+                        console.log("Black checker");
+                        break;
+                    case "wq":
+                        this.cells[i][j].checker = new CheckerModel(ColorsEnum.WHITE, this.player1);
+                        this.makeKing(this.cells[i][j]);
+                        break;
+                    default:
+                        // Handle unexpected value
+                        console.log("Unknown value:", element);
+                }
+                console.log(`Element at position (${i}, ${j}): ${element}`);
+            }
+        }
+
+        console.log(this.cells);
+    }
+    computerMoves(data: any) {
+        console.log(data);
+        const moveCoordinates = data.moveCoordinates;
+        // Now you can access moveCoordinates.X1, moveCoordinates.Y1, moveCoordinates.X2, moveCoordinates.Y2
+        const { X1, Y1, X2, Y2 } = moveCoordinates;
+        const X1ToMove = Y1-1;
+        const Y1ToMove=X1-1;
+        const X2ToMove = Y2-1;
+        const Y2ToMove=X2-1;
+
+        const cell1 = this.cells[X1ToMove][Y1ToMove];
+        const cell2 = this.cells[X2ToMove][Y2ToMove];
+        console.log(`Move from (${X1ToMove}, ${Y1ToMove}) to (${X2ToMove}, ${Y2ToMove})`);
+        return { cell1, cell2 };
+
+    }
+
 }

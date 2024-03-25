@@ -4,9 +4,8 @@ class BoardPl {
         this.boardState = null;
         this.boardPl=null;
     }
-    initializeBoard(boardString) {
-        this.boardPl = boardString.links.Board;
-        const boardTerm = boardString.links.Board;
+    initializeBoard(boardTerm) {
+        this.boardPl = boardTerm;
         const rows = boardTerm.args.map(rowTerm => {
             return rowTerm.args.map(cellTerm => {
                 if (cellTerm.is_float || typeof cellTerm.value === 'number') {
@@ -36,6 +35,13 @@ class BoardPl {
         const temp = this.boardState[X1][Y1];
         this.boardState[X1][Y1] = this.boardState[X2][Y2];
         this.boardState[X2][Y2] = temp;
+    }
+
+    eatCheckers(eatenCheckers){
+        for (let i = 0; i < eatenCheckers.length; i++) {
+            const { x, y } = eatenCheckers[i];
+            this.boardState[x][y] = 1;
+        }
     }
 
     getBoardState() {

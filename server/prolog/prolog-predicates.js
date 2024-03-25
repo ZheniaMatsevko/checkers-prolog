@@ -11,7 +11,12 @@ exports.getBoard = (callback) => {
 };
 
 exports.getNextMoveFor = (playerColor, boardState, callback) => {
-    const pQuery = `getNextMoveFor(${playerColor}, ${boardState}, Coordinates).`;
+    const pQuery = `getNextMoveFor(${playerColor}, ${boardState}, NextMove).`;
+    getResponseFromProlog(pQuery, callback);
+};
+
+exports.getAvailableUserMoves = (playerColor, boardState, callback) => {
+    const pQuery = `list_available_moves(${boardState},${playerColor}, Moves).`;
     getResponseFromProlog(pQuery, callback);
 };
 function getResponseFromProlog(pQuery, callback) {
@@ -32,6 +37,15 @@ function getResponseFromProlog(pQuery, callback) {
                             if (!responseSent) {
                                 responseSent = true;
                                 callback(null, x);
+                            }
+                        });
+                    },
+                    error: function (err) {
+                        session.answers(() => {
+                            console.error("Error consulting Prolog:", err);
+                            if (!responseSent) {
+                                responseSent = true;
+                                callback(err);
                             }
                         });
                     }

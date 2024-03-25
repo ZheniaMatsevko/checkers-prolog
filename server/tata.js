@@ -6,10 +6,10 @@ const boardState = 'game_board(l(0, b, 0, b, 0, b, 0, b),l(b, 0, b, 0, b, 0, b, 
 session.consult( "checkers.pl", {
     success: function () {
         console.log("Success");
-        session.query( `getNextMoveFor(${playerColor}, ${boardState}, Coordinates).` );
+        session.query( `list_available_moves( ${boardState},${playerColor}, Moves).` );
 
         var callback = console.log;
-        session.answer(callback); // X = salad ;
+        session.answer(callback);
     },
     error: function (err) {
         console.log("ERROR 2: " + err);

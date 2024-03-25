@@ -1,4 +1,13 @@
 import axios from 'axios';
+import {TCellCoords} from "../types/TCellCoords";
+
+interface MoveData {
+    X1: number,
+    Y1: number,
+    X2: number,
+    Y2: number,
+    eatenCheckers: TCellCoords[]
+}
 
 export default class CheckersService {
     // Fetch the initial board state from the backend
@@ -13,7 +22,7 @@ export default class CheckersService {
     }
 
     // Send the user move to the backend for processing
-    static async sendUserMove(moveData: { X1: number, Y1: number, X2: number, Y2: number }): Promise<any> {
+    static async sendUserMove(moveData: MoveData): Promise<void> {
         try {
             const response = await axios.put('http://localhost:3001/user-move', moveData);
             console.log("User made a move successfully");
@@ -33,5 +42,17 @@ export default class CheckersService {
             throw new Error('Failed to calculate computer move');
         }
     }
+    static async getAvailableUserMoves(color: string): Promise<any> {
+        try {
+            const response = await axios.get('http://localhost:3001/get-user-moves', {
+                params: { color } // Send color as a query parameter
+            });
+            return response.data;
+        } catch (error) {
+            console.error('Error calculating possible user moves:', error);
+            throw new Error('Failed to calculate possible user moves');
+        }
+    }
+
 }
 

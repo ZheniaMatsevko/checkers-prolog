@@ -1,5 +1,5 @@
 const BoardPl = require("../model/BoardPl");
-const { getBoard, getNextMoveFor} = require("../prolog/prolog-predicates");
+const { getBoard, getNextMoveFor, getAvailableUserMoves} = require("../prolog/prolog-predicates");
 const boardPlInstance = new BoardPl();
 
 class CheckersController {
@@ -10,7 +10,7 @@ class CheckersController {
                     return res.status(500).json({ error: "Failed to get board from Prolog" });
                 }
                 // Initialize boardPlInstance with the obtained board string
-                boardPlInstance.initializeBoard(boardString);
+                boardPlInstance.initializeBoard(boardString.links.Board);
                 console.log(boardPlInstance);
                 console.log(boardPlInstance.getBoardState());
                 // Send response indicating successful initialization
@@ -22,11 +22,46 @@ class CheckersController {
 
     }
 
-   async updateUserMove(req, res, next) {
-        const { X1, Y1, X2, Y2 } = req.body; // Assuming the coordinates are sent in the request body
-
+    async getUserMoves(req, res, next){
         try {
-            boardPlInstance.updateBoardWithCoords(X1, Y1, X2, Y2);
+            const color = req.query.color;
+            getAvailableUserMoves(color, boardPlInstance.getBoardState(), (error, moves) => {
+                if (error) {
+                    return res.status(500).json({ error: "Failed to get user moves from Prolog" });
+                }
+                const movesObject = moves.links.Moves;
+                const movesData = movesObject.args.map(move => {
+                    // Extracting move data
+                    const X1 = move.args[0].value;
+                    const Y1 = move.args[1].value;
+                    const X2 = move.args[2].value;
+                    const Y2 = move.args[3].value;
+
+                    // Return an object representing a move
+                    return {
+                        X1: X1,
+                        Y1: Y1,
+                        X2: X2,
+                        Y2: Y2,
+                    };
+                });
+                console.log(moves);
+                res.status(200).json({ message: 'Board initialized successfully', movesCoordinates: movesData });
+            });
+        } catch (error) {
+            next(error);
+        }
+    }
+   async updateUserMove(req, res, next) {
+       const { X1, Y1, X2, Y2, eatenCheckers } = req.body;
+
+       try {
+            boardPlInstance.updateBoardWithCoords(Y1, X1, Y2, X2);
+            boardPlInstance.eatCheckers(eatenCheckers);
+           for (let i = 0; i < eatenCheckers.length; i++) {
+               const { x, y } = eatenCheckers[i];
+               console.log(`Eaten checker ${i + 1}: x = ${x}, y = ${y}`);
+           }
             console.log(boardPlInstance);
             console.log(boardPlInstance.getBoardState());
             res.status(200).json({ message: 'Board updated successfully', boardState: boardPlInstance.getBoardState() });
@@ -50,12 +85,18 @@ class CheckersController {
                     return res.status(500).json({ error: 'Failed to calculate next move' });
                 }
 
-               let term = coordinates.links.Coordinates;
-                const [X1, Y1, X2, Y2] = term.args.map(arg => arg.value);
-                // Send response with updated board state
+               let term = coordinates.links.NextMove;
+                const X1 = term.args[0].value;
+                const Y1 = term.args[1].value;
+                const X2 = term.args[2].value;
+                const Y2 = term.args[3].value;
+                const boardTemp = term.args[4];
+                boardPlInstance.initializeBoard(boardTemp);// Send response with updated board state
+                console.log(boardPlInstance);
+                console.log(boardPlInstance.getBoardState());
                 res.status(200).json({
                     message: 'Computer move calculated and board updated',
-                    boardState: boardPlInstance.getBoardState(),
+                    boardState: boardPlInstance.boardState,
                     moveCoordinates: { X1, Y1, X2, Y2 } // Include the move coordinates in the response
                 });
             });

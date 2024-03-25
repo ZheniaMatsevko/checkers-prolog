@@ -7,6 +7,8 @@ const checkersController = new CheckersControllers();
 // Create a new task
 router.get('/get-initial-board', checkersController.getInitialBoard);
 
+router.get('/get-user-moves', checkersController.getUserMoves);
+
 router.put('/user-move', checkersController.updateUserMove);
 
 router.put('/comp-move', checkersController.updateCompMove);

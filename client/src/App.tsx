@@ -79,11 +79,19 @@ function App() {
     }, [selectedMode]);
 
 
-    const swapPlayer = useCallback(() => {
-        const newPlayer = curPlayer === ColorsEnum.WHITE ? ColorsEnum.BLACK : ColorsEnum.WHITE;
-        setCurPlayer(newPlayer);
-        checkGameOver(newPlayer);
-    }, [board, curPlayer]);
+    const swapPlayer = async () => {
+        return new Promise<void>((resolve) => {
+            setCurPlayer(prevPlayer => {
+                const newPlayer = prevPlayer === ColorsEnum.WHITE ? ColorsEnum.BLACK : ColorsEnum.WHITE;
+                console.log("In swap prev=" + prevPlayer + " new=" + newPlayer);
+                console.log("Rez = " + newPlayer); // Logging the newPlayer instead of curPlayer
+                checkGameOver(newPlayer);
+                resolve(); // Resolve the Promise once the asynchronous operations are completed
+                return newPlayer; // Return the new value of the player
+            });
+        });
+    };
+
 
     const checkGameOver = (player: ColorsEnum) => {
         if (board && !board.hasMoves(player)) {
