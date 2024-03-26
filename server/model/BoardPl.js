@@ -1,29 +1,20 @@
 
 class BoardPl {
     constructor() {
-        this.boardState = null;
+        this.boardState = [];
         this.boardPl=null;
     }
     initializeBoard(boardTerm) {
+        this.boardState = [];
         this.boardPl = boardTerm;
-        const rows = boardTerm.args.map(rowTerm => {
-            return rowTerm.args.map(cellTerm => {
-                if (cellTerm.is_float || typeof cellTerm.value === 'number') {
-                    return cellTerm.value;
-                } else if (cellTerm.id === 'b') {
-                    return 'b'; // Assuming 'b' represents black pieces
-                } else if (cellTerm.id === 'w') {
-                    return 'w'; // Assuming 'w' represents white pieces
-                }else if (cellTerm.id === 'wq') {
-                    return 'wq'; // Assuming 'w' represents white pieces
-                }else if (cellTerm.id === 'bq') {
-                    return 'bq'; // Assuming 'w' represents white pieces
-                } else {
-                    return null; // Handle other cases as needed
-                }
+
+        boardTerm.args.forEach(item => {
+            const row = [];
+            item.args.forEach(cell => {
+                row.push(cell === "b" || cell === "w" || cell === "wq" || cell === "bq" ? cell : parseInt(cell));
             });
+            this.boardState.push(row);
         });
-        this.boardState = rows;
     }
 
 

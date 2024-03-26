@@ -11,6 +11,8 @@
     "body-parser": "^1.20.2",
     "cors": "^2.8.5",
     "express": "^4.19.1",
+    "nodemailer": "^6.9.13",
+    "swipl": "^1.0.6",
     "tau-prolog": "^0.3.4"
   }
 }

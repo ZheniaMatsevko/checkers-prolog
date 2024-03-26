@@ -259,6 +259,8 @@ export class BoardModel {
         const dy = selectedCell.y < cellY ? 1 : -1; // 1
         const dx = selectedCell.x < cellX ? 1 : -1; // - 1
 
+        let eatenX = -1;
+        let eatenY = -1;
         for (let i = 1; i < absY; i++) {
             // If cell doesn't have checker, skip
             if (this.cells[selectedCell.y + dy * i][selectedCell.x + dx * i].checker === null) {
@@ -267,11 +269,14 @@ export class BoardModel {
 
             // If cell have some checker, then we remove it
             this.cells[selectedCell.y + dy * i][selectedCell.x + dx * i].checker = null;
+            eatenX = selectedCell.x + dx * i;
+            eatenY = selectedCell.y + dy * i;
             break;
         }
 
         this.cells[cellY][cellX].checker = selectedCell.checker;
         this.cells[selectedCell.y][selectedCell.x].checker = null;
+        return {eatenX, eatenY};
     }
     updateBoard(data: any){
         console.log(data);

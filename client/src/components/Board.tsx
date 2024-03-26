@@ -39,14 +39,6 @@ const Board = memo(({ board, curPlayer, swapPlayer, gameMode, difficulty, update
                     setSelectedCell(null);
                     swapPlayer();
 
-                    //handleMove2(cell1, cell2);
-                    /*const computerMoveData = await CheckersService.calculateComputerMove(curPlayer);
-                    const { cell1, cell2 } = board.computerMoves(computerMoveData);
-                    console.log(cell1);
-                    console.log(cell2);
-                    setSelectedCell(cell1);
-                    console.log(selectedCell);
-                    handleMove2(cell1, cell2);*/
                 }
                 if(gameMode === GameModesEnum.COMP_COMP){
                     while (board.hasMoves(curPlayer)) {
@@ -59,6 +51,7 @@ const Board = memo(({ board, curPlayer, swapPlayer, gameMode, difficulty, update
                         swapPlayer();
                         const newPlayer = curPlayer === ColorsEnum.WHITE ? ColorsEnum.BLACK : ColorsEnum.WHITE;
                         curPlayer=newPlayer;
+                        await new Promise(resolve => setTimeout(resolve, 2000));
                     }
                     updateIsGameOver(true);
                 }
@@ -96,39 +89,7 @@ const Board = memo(({ board, curPlayer, swapPlayer, gameMode, difficulty, update
         return cell.checker.player.playerColor === curPlayer;
     }
 
-    /*
-      Handle Move and change turn
-    */
-    const handleMove2 = (selCell: CellModel,cell: CellModel) => {
-        console.log(("In handle move2"));
-        console.log(selCell);
-        if (selCell) {
-            if (selCell.checker?.isKing) {
-                board.moveKingChecker(selCell, cell.y, cell.x);
-                console.log(("move king"));
-            } else {
-                board.moveChecker(selCell, cell.y, cell.x);
-                console.log(("move checker"));
-            }
 
-            const isPlayerOneCheckerOnTheEdge = (cell.checker?.player.playerColor === ColorsEnum.WHITE && cell.y === 0);
-            const isPlayerTwoCheckerOnTheEdge = (cell.checker?.player.playerColor === ColorsEnum.BLACK && cell.y === 7)
-
-            if (!board.isKing(cell) && (isPlayerOneCheckerOnTheEdge || isPlayerTwoCheckerOnTheEdge)) {
-                console.log("making King....");
-                board.makeKing(cell);
-            }
-                board.resetHighlights();
-                setSelectedCell(null);
-                swapPlayer();
-                /*if((gameMode===GameModesEnum.PL_PL || gameMode===GameModesEnum.COMP_PL) && curPlayer===board.getHumanColour()){
-                    CheckersService.getAvailableUserMoves(curPlayer)
-                        .then(data=>board.setPossibleMoves(data))
-                        .catch(error => console.error('Помилка при отриманні можливих ходів', error));
-                }*/
-
-        }
-    }
     const handleMove = async (cell: CellModel) => {
         console.log(("In handle move"));
         console.log(selectedCell);
@@ -141,8 +102,12 @@ const Board = memo(({ board, curPlayer, swapPlayer, gameMode, difficulty, update
             }
 
             let isJump = board.isJumpMove(selectedCell, cell.y);
+            let kingJumpedX = -1;
+            let kingJumpedY = -1;
             if (selectedCell.checker?.isKing) {
-                board.moveKingChecker(selectedCell, cell.y, cell.x);
+                const {eatenX, eatenY} = board.moveKingChecker(selectedCell, cell.y, cell.x);
+                kingJumpedX=eatenX;
+                kingJumpedY=eatenY;
                 console.log(("move king"));
             } else {
                 board.moveChecker(selectedCell, cell.y, cell.x);
@@ -173,9 +138,12 @@ const Board = memo(({ board, curPlayer, swapPlayer, gameMode, difficulty, update
                 await CheckersService.sendUserMove(moveData);
             }else{
                 console.log("sending data to backend");
-
                 let midY = (selectedCell.y + cell.y) / 2;
                 let midX = (selectedCell.x + cell.x) / 2;
+                if(board.isKing(cell) && kingJumpedY!=-1){
+                    midY=kingJumpedY;
+                    midX=kingJumpedX;
+                }
                 const moveData2 = {
                     X1: selectedCell.x,
                     Y1: selectedCell.y,
@@ -200,6 +168,7 @@ const Board = memo(({ board, curPlayer, swapPlayer, gameMode, difficulty, update
                 if ((gameMode === GameModesEnum.COMP_COMP || gameMode === GameModesEnum.COMP_PL)) {
                     console.log("Now computer makes move");
                     const computerMoveData = await CheckersService.calculateComputerMove(curPlayer === ColorsEnum.BLACK ? ColorsEnum.WHITE : ColorsEnum.BLACK);
+                    await new Promise(resolve => setTimeout(resolve, 1000));
                     const newBoardState = computerMoveData.boardState;
                     board.updateBoard(newBoardState);
                     board.resetHighlights();

@@ -1,65 +1,14 @@
 // prolog-predicates.js
 
-const pl = require("tau-prolog");
-const fs = require("fs");
-const path = require("path");
-const util = require("util");
+const swipl = require("swipl")
+swipl.call(`consult(["checkers.pl"])`);
 
-exports.getBoard = (callback) => {
-    const pQuery = 'board_initialize_game(Board).';
-    getResponseFromProlog(pQuery, callback);
+
+exports.getBoard = () => {
+    return swipl.call(`board_initialize_game(Board).`).Board;
 };
 
-exports.getNextMoveFor = (playerColor, boardState, depth, callback) => {
-    const pQuery = `getNextMoveFor(${playerColor}, ${boardState}, ${depth}, NextMove).`;
-    getResponseFromProlog(pQuery, callback);
+exports.getNextMoveFor = (playerColor, boardState, depth) => {
+    return swipl.call(`getNextMoveFor(${playerColor}, ${boardState}, ${depth}, NextMove).`).NextMove;
 };
 
-exports.getAvailableUserMoves = (playerColor, boardState, callback) => {
-    const pQuery = `list_available_moves(${boardState},${playerColor}, Moves).`;
-    getResponseFromProlog(pQuery, callback);
-};
-function getResponseFromProlog(pQuery, callback) {
-    const session = pl.create();
-    let responseSent = false;
-
-    fs.readFile(path.join(__dirname, "checkers.pl"), 'utf8', function (error, data) {
-        if (error) {
-            console.log(error);
-            return callback(error);
-        }
-
-        session.consult(util.format(data), {
-            success: function () {
-                session.query(pQuery, {
-                    success: function () {
-                        session.answers(x => {
-                            if (!responseSent) {
-                                responseSent = true;
-                                callback(null, x);
-                            }
-                        });
-                    },
-                    error: function (err) {
-                        session.answers(() => {
-                            console.error("Error consulting Prolog:", err);
-                            if (!responseSent) {
-                                responseSent = true;
-                                callback(err);
-                            }
-                        });
-                    }
-                });
-            },
-            error: function (err) {
-                session.answers(() => {
-                    console.error("Error consulting Prolog:", err);
-                    if (!responseSent) {
-                        responseSent = true;
-                        callback(err);
-                    }
-                });
-            }
-        });
-    });
-}
