@@ -689,7 +689,7 @@ evaluate_board(Board, -200, _):-
     \+list_available_moves(Board,white,_),
     list_available_moves(Board,black,_), !.
 
-evaluate_board(Board, 0, Iterator) :-  Iterator > 8, !.
+evaluate_board(_, 0, Iterator) :-  Iterator > 8, !.
 
 evaluate_board(Board, Eval, Iterator) :-
     arg(Iterator, Board, Line), !,
@@ -699,7 +699,7 @@ evaluate_board(Board, Eval, Iterator) :-
     Eval is LineEval + RemainingEval.
 
 
-evaluate_line(Line, 0, _, Column) :- Column > 8, !.
+evaluate_line(_, 0, _, Column) :- Column > 8, !.
 
 evaluate_line(Line, Eval, Row, Column) :-
 	arg(Column, Line, Piece), !,
@@ -717,7 +717,7 @@ minimax(Player, Board, NextMove, Eval, Depth) :-
 	list_available_moves(Board, OtherPlayer, Moves),
 	best(OtherPlayer, Moves, NextMove, Eval, NewDepth), !.
 
-minimax(Player, Board, _, Eval, Depth) :-
+minimax(Player, Board, _, Eval, _) :-
 	evaluate_board(Board, Eval, 1), !.
 
 
@@ -745,7 +745,7 @@ minimizing(black).
 move_board(m(_,_,_,_, Board), Board).
 move_board(e(_,_,_,_, Board), Board).
 %move_board([e(_,_,_,_, Board)], Board).
-better_of(Player, Move1, Eval1, Move2, Eval2, Move1, Eval1) :-
+better_of(Player, Move1, Eval1, _, Eval2, Move1, Eval1) :-
 	maximizing(Player),
 	Eval1 >= Eval2, !.
 better_of(Player, Move1, Eval1, Move2, Eval2, Move2, Eval2) :-
