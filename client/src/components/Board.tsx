@@ -168,7 +168,12 @@ const Board = memo(({ board, curPlayer, swapPlayer, gameMode, difficulty, update
                 if ((gameMode === GameModesEnum.COMP_COMP || gameMode === GameModesEnum.COMP_PL)) {
                     console.log("Now computer makes move");
                     const computerMoveData = await CheckersService.calculateComputerMove(curPlayer === ColorsEnum.BLACK ? ColorsEnum.WHITE : ColorsEnum.BLACK);
-                    await new Promise(resolve => setTimeout(resolve, 1000));
+                    if(difficulty===DifficultyEnum.DIFFICULT)
+                        await new Promise(resolve => setTimeout(resolve, 3000));
+                    if(difficulty===DifficultyEnum.MEDIUM)
+                        await new Promise(resolve => setTimeout(resolve, 2000));
+                    if(difficulty===DifficultyEnum.SIMPLE)
+                        await new Promise(resolve => setTimeout(resolve, 1000));
                     const newBoardState = computerMoveData.boardState;
                     board.updateBoard(newBoardState);
                     board.resetHighlights();

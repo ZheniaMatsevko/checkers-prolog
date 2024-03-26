@@ -19,11 +19,9 @@ class CheckersController {
             const boardString = getBoard();
             boardPlInstance.initializeBoard(boardString);
             res.status(200).json({ message: 'Board initialized successfully', boardState: boardPlInstance.getBoardState() });
-
         } catch (error) {
             next(error);
         }
-
     }
    async updateUserMove(req, res, next) {
        const { X1, Y1, X2, Y2, eatenCheckers, isKing } = req.body;
@@ -41,17 +39,15 @@ class CheckersController {
 
     async updateCompMove(req, res, next) {
         try {
-            // Get the current board state from the boardPlInstance
             const boardState = boardPlInstance.getBoardState();
             const { color } = req.body;
             const nextMove = getNextMoveFor(color, boardState, maxDepth);
-
-                const boardTemp = nextMove.args[4];
-                boardPlInstance.initializeBoard(boardTemp);// Send response with updated board state
-                res.status(200).json({
-                    message: 'Computer move calculated and board updated',
-                    boardState: boardPlInstance.boardState,
-                });
+            const boardTemp = nextMove.args[4];
+            boardPlInstance.initializeBoard(boardTemp);
+            res.status(200).json({
+                message: 'Computer move calculated and board updated',
+                boardState: boardPlInstance.boardState,
+            });
         } catch (error) {
             // Handle any errors that occur during the move calculation
             console.error('Error calculating computer move:', error);

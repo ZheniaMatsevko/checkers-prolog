@@ -7,7 +7,6 @@ class BoardPl {
     initializeBoard(boardTerm) {
         this.boardState = [];
         this.boardPl = boardTerm;
-
         boardTerm.args.forEach(item => {
             const row = [];
             item.args.forEach(cell => {
