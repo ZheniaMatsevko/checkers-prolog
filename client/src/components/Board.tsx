@@ -51,7 +51,7 @@ const Board = memo(({ board, curPlayer, swapPlayer, gameMode, difficulty, update
                         swapPlayer();
                         const newPlayer = curPlayer === ColorsEnum.WHITE ? ColorsEnum.BLACK : ColorsEnum.WHITE;
                         curPlayer=newPlayer;
-                        await new Promise(resolve => setTimeout(resolve, 2000));
+                        await new Promise(resolve => setTimeout(resolve, 1000));
                     }
                     updateIsGameOver(true);
                 }
@@ -171,7 +171,7 @@ const Board = memo(({ board, curPlayer, swapPlayer, gameMode, difficulty, update
                     if(difficulty===DifficultyEnum.DIFFICULT)
                         await new Promise(resolve => setTimeout(resolve, 3000));
                     if(difficulty===DifficultyEnum.MEDIUM)
-                        await new Promise(resolve => setTimeout(resolve, 2000));
+                        await new Promise(resolve => setTimeout(resolve, 1000));
                     if(difficulty===DifficultyEnum.SIMPLE)
                         await new Promise(resolve => setTimeout(resolve, 1000));
                     const newBoardState = computerMoveData.boardState;

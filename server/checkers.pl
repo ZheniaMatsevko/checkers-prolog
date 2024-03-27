@@ -22,67 +22,6 @@ empty_board(
 		       l(0, 1, 0, 1, 0, 1, 0, 1),
 		       l(1, 0, 1, 0, 1, 0, 1, 0)
 		      )).
-% chain eat
-test_board_1(
-	     game_board(
-			l(0, b, 0, 1, 0, 1, 0, 1),
-			l(1, 0, w, 0, 1, 0, 1, 0),
-			l(0, 1, 0, 1, 0, 1, 0, 1),
-			l(1, 0, 1, 0, w, 0, 1, 0),
-			l(0, 1, 0, 1, 0, 1, 0, 1),
-			l(1, 0, 1, 0, w, 0, w, 0),
-			l(0, 1, 0, 1, 0, 1, 0, 1),
-			l(1, 0, 1, 0, 1, 0, 1, 0)
-		       )).
-% simple eat
-test_board_2(
-	     game_board(
-			l(0, b, 0, 1, 0, 1, 0, 1),
-			l(1, 0, w, 0, 1, 0, 1, 0),
-			l(0, 1, 0, 1, 0, 1, 0, 1),
-			l(1, 0, 1, 0, 1, 0, 1, 0),
-			l(0, 1, 0, b, 0, b, 0, 1),
-			l(1, 0, 1, 0, w, 0, w, 0),
-			l(0, 1, 0, 1, 0, 1, 0, 1),
-			l(1, 0, 1, 0, 1, 0, 1, 0)
-		       )).
-
-
-test_board_3(
-	     game_board(
-			l(0, 1, 0, 1, 0, 1, 0, 1),
-			l(1, 0, 1, 0, 1, 0, 1, 0),
-			l(0, 1, 0, 1, 0, 1, 0, 1),
-			l(1, 0, 1, 0, 1, 0, 1, 0),
-			l(0, 1, 0, w, 0, 1, 0, 1),
-			l(1, 0, 1, 0, 1, 0, 1, 0),
-			l(0, 1, 0, 1, 0, 1, 0, 1),
-			l(1, 0, 1, 0, 1, 0, 1, 0)
-		       )).
-
-test_board_4(
-	game_board(
-		       l(0, b, 0, b, 0, b, 0, 1),
-		       l(w, 0, 1, 0, 1, 0, b, 0),
-		       l(0, 1, 0, 1, 0, 1, 0, w),
-		       l(1, 0, 1, 0, 1, 0, 1, 0),
-		       l(0, 1, 0, 1, 0, 1, 0, 1),
-		       l(1, 0, 1, 0, 1, 0, 1, 0),
-		       l(0, 1, 0, 1, 0, 1, 0, 1),
-		       l(1, 0, 1, 0, 1, 0, 1, 0)
-		      )).
-test_board_5(
-	    game_board(
-		       l(0, 1, 0, 1, 0, 1, 0, 1),
-		       l(wq, 0, 1, 0, 1, 0, 1, 0),
-		       l(0, bq, 0, 1, 0, 1, 0, 1),
-		       l(1, 0, 1, 0, 1, 0, 1, 0),
-		       l(0, 1, 0, 1, 0, 1, 0, 1),
-		       l(1, 0, 1, 0, 1, 0, 1, 0),
-		       l(0, 1, 0, 1, 0, 1, 0, 1),
-		       l(1, 0, 1, 0, 1, 0, 1, 0)
-		      )).
-
 
 
 % board_initialize_empty(-Board).
@@ -142,80 +81,6 @@ board_initialize_game_even(Line,Player):-
 	arg(3,Line,Player), arg(4,Line,0),
 	arg(5,Line,Player), arg(6,Line,0),
 	arg(7,Line,Player), arg(8,Line,0).
-
-
-% board_print(+Board).
-% Prints the board Board to the console.
-board_print(game_board(A,B,C,D,E,F,G,H)):-
-	tab(3),print(1), tab(2),print(2), tab(2),
-	print(3), tab(2),print(4), tab(2),
-	print(5), tab(2),print(6), tab(2),
-	print(7), tab(2),print(8), tab(2), nl,
-	print(1), tab(2),
-	board_print_line(A),
-	print(2), tab(2),
-	board_print_line(B),
-	print(3), tab(2),
-	board_print_line(C),
-	print(4), tab(2),
-	board_print_line(D),
-	print(5), tab(2),
-	board_print_line(E),
-	print(6), tab(2),
-	board_print_line(F),
-	print(7), tab(2),
-	board_print_line(G),
-	print(8), tab(2),
-	board_print_line(H).
-
-% board_print_line(+Line).
-% Auxiliary function that prints a line of the board.
-board_print_line(Line):-
-	board_print_line_element(Line,1),
-	board_print_line_element(Line,2),
-	board_print_line_element(Line,3),
-	board_print_line_element(Line,4),
-	board_print_line_element(Line,5),
-	board_print_line_element(Line,6),
-	board_print_line_element(Line,7),
-	board_print_line_element(Line,8),
-	nl.
-
-board_print_line_element(Line,Index):-
-	arg(Index,Line,E),
-	E == 1, !,
-%format('~c',[9632]), % black square
-	format('~c',[95]),	% underscore
-	tab(2).
-board_print_line_element(Line,Index):-
-	arg(Index,Line,E),
-	E == 0, !,
-	tab(3).			% just a white space
-board_print_line_element(Line,Index):-
-	arg(Index,Line,E),
-	E == w, !,
-	format('~c',[9920]),	% unicode white checkers piece
-	tab(2).
-board_print_line_element(Line,Index):-
-	arg(Index,Line,E),
-	E == b, !,
-	format('~c',[9922]),	% unicode black checkers piece
-	tab(2).
-board_print_line_element(Line,Index):-
-	arg(Index,Line,E),
-	E == wq, !,
-	format('~c',[9921]),	% unicode white king checkers piece
-	tab(2).
-board_print_line_element(Line,Index):-
-	arg(Index,Line,E),
-	E == bq, !,
-	format('~c',[9923]),	% unicode black king checkers piece
-	tab(2).
-
-board_print_line_element(Line,Index):-
-	arg(Index,Line,E),
-	print(E),		% shouldn't reach this state
-	tab(2).
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -648,24 +513,26 @@ chain_eat(Board,p(E,X,Y),[e(X,Y,X1,Y1,Board2)|Moves]):-
 chain_eat(Board,p(E,X,Y),[]):-
 	\+next_eat_move(Board,E,X,Y,_).
 
-
+% remove_empty(+List, -ResultList)
+% Removes empty lists from a list of lists.
 remove_empty([],[]):- !.
 remove_empty([[]|L],L1):- !, remove_empty(L,L1).
 remove_empty([X|L],[X|L1]):- remove_empty(L,L1).
 
-
-
+% next_player(+CurrentPlayer, -NextPlayer)
+% Determines the next player given the current player.
 next_player(white,black).
 next_player(black,white).
 
+% player_piece(+Player, -Piece)
+% Determines the piece associated with a player.
 player_piece(white,w).
 player_piece(white,wq).
 player_piece(black,b).
 player_piece(black,bq).
 
-
-
-% board_weight(+Piece,+X,+Y,-W).
+% board_weight(+Piece, +X, +Y, -Weight)
+% Determines the weight of a piece at a given position.
 board_weight(w,_,1,5).
 board_weight(w,_,2,3).
 board_weight(w,_,3,2).
@@ -682,6 +549,8 @@ board_weight(b,_,8,5).
 board_weight(b,_,_,1).
 board_weight(_,_,_,1).
 
+% evaluate_board(+Board, -Eval, +Iterator)
+% Evaluates the board based on the player's perspective.
 evaluate_board(Board, 200, _):-
     \+list_available_moves(Board,black,_),
     list_available_moves(Board,white,_), !.
@@ -698,7 +567,8 @@ evaluate_board(Board, Eval, Iterator) :-
     evaluate_board(Board, RemainingEval, IteratorNext),
     Eval is LineEval + RemainingEval.
 
-
+% evaluate_line(+Line, -Eval, +Row, +Column)
+% Evaluates a line on the board.
 evaluate_line(_, 0, _, Column) :- Column > 8, !.
 
 evaluate_line(Line, Eval, Row, Column) :-
@@ -709,7 +579,8 @@ evaluate_line(Line, Eval, Row, Column) :-
 	evaluate_line(Line, RemainingEval, Row, IteratorNext),
 	Eval is RemainingEval + PieceValue * W.
 
-
+% minimax(+Player, +Board, -NextMove, -Eval, +Depth)
+% Performs the minimax algorithm to find the best move.
 minimax(Player, Board, NextMove, Eval, Depth) :-
 	Depth < 5,
 	NewDepth is Depth + 1,
@@ -717,12 +588,11 @@ minimax(Player, Board, NextMove, Eval, Depth) :-
 	list_available_moves(Board, OtherPlayer, Moves),
 	best(OtherPlayer, Moves, NextMove, Eval, NewDepth), !.
 
-minimax(Player, Board, _, Eval, _) :-
+minimax(_, Board, _, Eval, _) :-
 	evaluate_board(Board, Eval, 1), !.
 
-
-
-
+% best(+Player, +Moves, -BestMove, -BestEval, +Depth)
+% Determines the best move among a list of moves.
 best(Player, [Move], Move, Eval, Depth) :-
 	move_board(Move, Board),
 	minimax(Player, Board, _, Eval, Depth), !.
@@ -730,36 +600,42 @@ best(Player, [Move], Move, Eval, Depth) :-
 best(Player, [Move|Moves], BestMove, BestEval, Depth) :-
 	dechain(Move, Move1),
 	move_board(Move1, Board),
-	minimax(Player, Board, NextMove, Eval, Depth),
+	minimax(Player, Board, _, Eval, Depth),
 	best(Player, Moves, BestMove1, BestEval1, Depth),
 	better_of(Player, Move1, Eval, BestMove1, BestEval1, BestMove, BestEval).
 
+% dechain(+Move, -ResultMove)
+% Unchains the move list.
 dechain([Move],Move).
-dechain([Move|Moves],Last) :- last(Moves, Last).
+dechain([_|Moves],Last) :- last(Moves, Last).
 dechain(Move, Move).
-
 
 maximizing(white).
 minimizing(black).
 
+% move_board(+Move, -Board)
+% Extracts the board from a move.
 move_board(m(_,_,_,_, Board), Board).
 move_board(e(_,_,_,_, Board), Board).
-%move_board([e(_,_,_,_, Board)], Board).
+
+% better_of(+Player, +Move1, +Eval1, +Move2, +Eval2, -BestMove, -BestEval)
+% Determines the better move between two moves.
 better_of(Player, Move1, Eval1, _, Eval2, Move1, Eval1) :-
 	maximizing(Player),
 	Eval1 >= Eval2, !.
-better_of(Player, Move1, Eval1, Move2, Eval2, Move2, Eval2) :-
+better_of(Player, _, Eval1, Move2, Eval2, Move2, Eval2) :-
 	maximizing(Player),
 	Eval2 >= Eval1, !.
 
-better_of(Player, Move1, Eval1, Move2, Eval2, Move1, Eval1) :-
+better_of(Player, Move1, Eval1, _, Eval2, Move1, Eval1) :-
 	minimizing(Player),
 	Eval1 =< Eval2, !.
-better_of(Player, Move1, Eval1, Move2, Eval2, Move2, Eval2) :-
+better_of(Player, _, Eval1, Move2, Eval2, Move2, Eval2) :-
 	minimizing(Player),
 	Eval2 =< Eval1, !.
 
-
+% piece_value(+Piece, -Value)
+% Determines the value of a piece.
 piece_value(1, 0).
 piece_value(0, 0).
 piece_value(w, 1).
@@ -768,16 +644,19 @@ piece_value(wq, 5).
 piece_value(bq, -5).
 
 
-
+% alphabeta(+Player, +Alpha, +Beta, +Board, -NextMove, -Eval, +Depth, +MaxDepth)
+% Performs the alpha-beta pruning algorithm.
 alphabeta(Player, Alpha, Beta, Board, NextMove, Eval, Depth, MaxDepth) :-
 	Depth < MaxDepth,
 	NewDepth is Depth + 1,
 	list_available_moves(Board, Player, Moves),
 	bounded_best(Player, Alpha, Beta, Moves, NextMove, Eval, NewDepth, MaxDepth), !.
 
-alphabeta(Player, Alpha, Beta, Board, NextMove, Eval, Depth, _) :-
+alphabeta(_, _, _, Board, _, Eval, _, _) :-
 	evaluate_board(Board, Eval, 1), !.
 
+% bounded_best(+Player, +Alpha, +Beta, +Moves, -BestMove, -BestEval, +Depth, +MaxDepth)
+% Determines the best move within bounds.
 bounded_best(Player, Alpha, Beta, [Move|Moves], BestMove, BestEval, Depth, MaxDepth) :-
 	dechain(Move, Move1),
 	move_board(Move1, Board),
@@ -785,12 +664,14 @@ bounded_best(Player, Alpha, Beta, [Move|Moves], BestMove, BestEval, Depth, MaxDe
 	alphabeta(NextPlayer, Alpha, Beta, Board, _, Eval, Depth, MaxDepth),
 	good_enough(Player, Moves, Alpha, Beta, Move1, Eval, BestMove, BestEval, Depth, MaxDepth).
 
-good_enough(Player, [], _, _, Move, Eval, Move, Eval, Depth, _) :- !.
+% good_enough(+Player, +Moves, +Alpha, +Beta, +Move, +Eval, -BestMove, -BestEval, +Depth, +MaxDepth)
+% Determines if a move is good enough.
+good_enough(_, [], _, _, Move, Eval, Move, Eval, _, _) :- !.
 
-good_enough(Player, _, Alpha, Beta, Move, Eval, Move, Eval, Depth, _) :-
+good_enough(Player, _, Alpha, _, Move, Eval, Move, Eval, _, _) :-
 	minimizing(Player), Eval > Alpha, !.
 
-good_enough(Player, _, Alpha, Beta, Move, Eval, Move, Eval, Depth, _) :-
+good_enough(Player, _, _, Beta, Move, Eval, Move, Eval, _, _) :-
 	maximizing(Player), Eval < Beta, !.
 
 good_enough(Player, Moves, Alpha, Beta, Move, Eval, BestMove, BestEval, Depth, MaxDepth) :-
@@ -805,107 +686,20 @@ new_bounds(Player, Alpha, Beta, Eval, Eval, Beta) :-
 new_bounds(Player, Alpha, Beta, Eval, Alpha, Eval) :-
 	maximizing(Player), Eval < Beta, !.
 
-
-print_possible_moves(_, []) :- !,  nl.
-
-print_possible_moves(Num, [m(X1,Y1,X2,Y2,_)|Moves]) :- !,
-	write(Num), write(': ('), write(X1), write(','), write(Y1),
-	write(') -> ('),
-	write(X2), write(','), write(Y2), write(')'), nl,
-	NextNum is Num + 1,
-	print_possible_moves(NextNum, Moves).
-
-
-print_possible_moves(Num, [Chain|Moves]) :- !,
-	write(Num), write(': '),
-	print_chain_moves(Chain),
-	NextNum is Num + 1,
-	print_possible_moves(NextNum, Moves).
-
-print_chain_moves([e(X1,Y1,X2,Y2,_)]) :- !,
-	write('('), write(X1), write(','), write(Y1),
-	write(') -> ('),
-	write(X2), write(','), write(Y2), write(')'), nl.
-
-print_chain_moves([e(X1,Y1,X2,Y2,_)|Chain]) :- !,
-	write('('), write(X1), write(','), write(Y1),
-	write(') -> ('),
-	write(X2), write(','), write(Y2), write(') -> '),
-	print_chain_moves(Chain).
-
-print_move(m(X1, Y1, X2, Y2, _)) :- !,
-	write('('), write(X1), write(','), write(Y1),
-	write(') -> ('),
-	write(X2), write(','), write(Y2), write(')'), nl.
-print_move(e(X1, Y1, X2, Y2, _)) :- !,
-	write('('), write(X1), write(','), write(Y1),
-	write(') -> ('),
-	write(X2), write(','), write(Y2), write(')'), nl.
-
-main :-
-	abolish(current/2),
-	board_initialize_game(Board),
-	assert(current(white, Board)),
-	write('Prolog checkers'), nl,
-	write('To play select one of the options available:\n3. for example (the dot in the end is important!)\n'),
-	play.
-
-play:-
-    current(Player, Board),
-    board_print(Board),
-    make_play(Player, Board).
-
-
-make_play(white, Board) :-
-    alphabeta(white, -1000, 1000, Board, NextMove, Eval, 0, 3),    % Run alpha beta for current board
-    nonvar(NextMove), !,
-    write('White (computer) turn to play.'), nl,
-    write('Move evaluation: '), write(Eval), nl,
-    print_move(NextMove),
-    move_board(NextMove, NewBoard),
-    abolish(current/2),                                      % Replaces current in DB
-    assert(current(black, NewBoard)),                        % and switches players
-    play.
-make_play(white, Board):-
-    list_available_moves(Board, black, _), !,
-    write('Black (human) wins the game.'),nl.
-make_play(white,_):-
-    write('Draw.'),nl.
-
-make_play(black,Board) :-
-    list_available_moves(Board, black, Moves), !,
-    write('Black (human) turn to play.'), nl,
-    print_possible_moves(1, Moves),
-    repeat, % Keep asking the user for a valid option
-    read(Option),
-    nth1(Option, Moves, Move), !, % valid option selected, fails are interestingagain :/
-    dechain(Move,Move1),
-    move_board(Move1,NewBoard),
-    abolish(current/2),
-    assert(current(white,NewBoard)),
-    play.
-make_play(black,Board) :-
-    list_available_moves(Board, white, _), !,
-    write('White (computer) wins the game.'),nl.
-make_play(black,_):-
-    write('Draw.'), nl.
-
-
-    % a predicate to generate a list of integers from Start to End
-    generate_list(Start, End, List) :-
-        generate_list_helper(Start, End, [], List).
-
-    generate_list_helper(End, End, Acc, [End|Acc]).
+% a predicate to generate a list of integers from Start to End
+%generate_list(+Start, +End, -List)
+generate_list(Start, End, List) :-
+    generate_list_helper(Start, End, [], List).
+%generate_list_helper(+End, +End, +Acc, -[End|Acc])
+generate_list_helper(End, End, Acc, [End|Acc]).
     generate_list_helper(Start, End, Acc, List) :-
         Start < End,
         Next is Start + 1,
         generate_list_helper(Next, End, [Start|Acc], List).
 
 
-
+%getNextMoveFor(+Colour, +Board, +MaxDepth, -NextMove)
+%gets next best move for a player
 getNextMoveFor(Colour, Board, MaxDepth, NextMove) :-
     alphabeta(Colour, -1000, 1000, Board, NextMove, _, 0, MaxDepth),    % Run alpha beta for current board
     nonvar(NextMove), !.
-
-% Define the getCoordinatesFromMove predicate
-getCoordinatesFromMove(m(X1, Y1, X2, Y2, _), c(X1, Y1, X2, Y2)).
